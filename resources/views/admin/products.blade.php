@@ -6,7 +6,7 @@
                 <div class="col-12">
                     <div class="row align-items-center my-4">
                         <div class="col">
-                            <h2 class="h3 mb-0 page-title">Contacts</h2>
+                            <h2 class="h3 mb-0 page-title">Product</h2>
                         </div>
                         <div class="col-auto">
                             <button type="button" class="btn btn-secondary"><span
@@ -44,11 +44,18 @@
                                                     <td>{{ number_format($item->price) }}</td>
                                                     <td>{{ $item->stok }}</td>
                                                     <td>
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" class="custom-control-input"
-                                                                id="c1">
-                                                            <label class="custom-control-label" for="c1"></label>
-                                                        </div>
+                                                        <center>
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox"
+                                                                    class="toggle-status custom-control-input"
+                                                                    id="switch{{ $item->id }}"
+                                                                    data-id="{{ $item->id }}"
+                                                                    {{ $item->activate == 'activate' ? 'checked' : '' }}>
+                                                                <label class="custom-control-label"
+                                                                    for="switch{{ $item->id }}"></label>
+                                                            </div>
+                                                        </center>
+
                                                     </td>
                                                     <td>
                                                         <div class="dropdown">
@@ -62,7 +69,7 @@
                                                                 <a class="dropdown-item"
                                                                     href="/editprodutcs/{{ $item->id }}">Edit</a>
                                                                 <a class="dropdown-item"
-                                                                    href="/removeproducts/{{ $item->id }}">Remove</a>
+                                                                    href="/remove/products/{{ $item->id }}">Remove</a>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -154,4 +161,28 @@
             </div> <!-- .row -->
         </div> <!-- .container-fluid -->
     </main>
+    <script>
+        document.querySelectorAll('.toggle-status').forEach(item => {
+            item.addEventListener('change', function() {
+                let productId = this.getAttribute('data-id');
+                let status = this.checked;
+
+                fetch(`/products/${productId}/toggle`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            status: status
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log("Status updated:", data);
+                    })
+                    .catch(err => console.error(err));
+            });
+        });
+    </script>
 @endsection

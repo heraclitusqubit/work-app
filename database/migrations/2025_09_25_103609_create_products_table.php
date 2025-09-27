@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name_product');
             $table->tinyText('image_product');
             $table->enum('category', ['reguler','exotic', 'deluxe', 'esspreso']);
+            $table->enum('activate', ['activate','inactivate'])->default('activate');
             $table->integer('price');
             $table->integer('stok');
             $table->string('notes');
